@@ -67,8 +67,8 @@ def metrics(y, x):
 def black_scholes_price(type_, spot, strike, maturity, vol, r):
     d1 = torch.div(torch.log(torch.div(spot, strike)) + (r + 0.5 * torch.square(vol)) * maturity, vol * torch.sqrt(maturity))
     d2 = torch.div(torch.log(torch.div(spot, strike)) + (r - 0.5 * torch.square(vol)) * maturity, vol * torch.sqrt(maturity))
-
-    dist = torch.distributions.normal.Normal(torch.tensor([0.0]).to('cuda'), torch.tensor([1.0]).to('cuda'))
+    device = spot.device
+    dist = torch.distributions.normal.Normal(torch.tensor([0.0]).to(device), torch.tensor([1.0]).to(device))
     cdf1, cdf2 = dist.cdf(d1), dist.cdf(d2)
     neg_1_cdf, neg_2_cdf = dist.cdf(-d1), dist.cdf(-d2)
 

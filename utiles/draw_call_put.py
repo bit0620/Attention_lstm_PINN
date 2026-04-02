@@ -166,7 +166,7 @@ def caculate_error(test_iter, model):
         return pred_price, true_price
 
 if __name__ == "__main__":
-    model = torch.load(os.path.join(parent_dir, "model", "ALstm_9_pi"), 
+    model = torch.load(os.path.join(parent_dir, "model", "CALstm.pt"), 
                    weights_only=False, 
                    map_location=torch.device('cpu'))
 

@@ -18,7 +18,7 @@ def train(optiomizer, num_epochs, net, train_iter, params, lambda_weight):
     net = net.cpu()
     Optim = optiomizer
     num_epochs = num_epochs
-    schedular = MultiStepLR(Optim, milestones=[25, 75], gamma=0.1)
+    schedular = MultiStepLR(Optim, milestones=[50, 100], gamma=0.1)
     loss_var = []
     for epoch in tqdm(range(num_epochs)):
         train_loss = []
@@ -47,7 +47,7 @@ def train(optiomizer, num_epochs, net, train_iter, params, lambda_weight):
     # plt.title("Training Curve")
     # plt.show()
 
-    torch.save(net, r'model\CALstm.pt')
+    torch.save(net, r'model\ALstm_.pt')
 
 
 def test(tset_iter, loss_fn):
@@ -118,8 +118,8 @@ def test(tset_iter, loss_fn):
 
 if __name__ == '__main__':
     batch_size, num_epoches, learn_rate, num_workers = 128, 150, 0.001, 4
-    in_channel, input_size, hd_size, num_lstm_layers, drop_out, num_attention_heads = 3, 5, 32, 3, 0.1, 4
-    out_channel, middle_channel, num_steps, lambda_weight = 3, 6, 10, 0.05
+    in_channel, input_size, hd_size, num_lstm_layers, drop_out, num_attention_heads = 3, 5, 32, 2, 0.3, 4
+    out_channel, middle_channel, num_steps, lambda_weight = 3, 6, 10, 0.02
 
 
     params = [out_channel, middle_channel, hd_size, learn_rate, num_lstm_layers, lambda_weight]
@@ -154,7 +154,7 @@ if __name__ == '__main__':
 
     params_loss = DataLoader(loss_data, batch_size=batch_size, num_workers=num_workers, shuffle=False, drop_last=False)
 
-    test_iter = DataLoader(TensorDataset(test_data, test_target), batch_size=batch_size, num_workers=num_workers, shuffle=False, drop_last=False)
+    test_iter = DataLoader(TensorDataset(test_input, test_target), batch_size=batch_size, num_workers=num_workers, shuffle=False, drop_last=False)
 
     model = Attention_lstm_model(in_channel=in_channel, input_size=input_size, lstm_hdsize=hd_size, num_lstm_layers=num_lstm_layers, drop_out=drop_out, num_heads=num_attention_heads,
                                  out_channel=out_channel, middle_channel=middle_channel, num_step=num_steps)
