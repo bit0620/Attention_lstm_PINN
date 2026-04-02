@@ -11,7 +11,6 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import torch
-
 plt.rcParams['font.sans-serif'] = ['SimHei']  # 用来正常显示中文标签
 plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
 
@@ -28,8 +27,8 @@ def train(optiomizer, num_epochs, net, train_iter, params, lambda_weight):
             param = param.cpu()
             Optim.zero_grad()
             Y_hat = net(X)
-            l = nn.MSELoss()(Y_hat, Y)
-            # l = loss_function(Y_hat, Y, param, lambda_weight)
+            #l = nn.MSELoss()(Y_hat, Y)
+            l = loss_function(Y_hat, Y, param, lambda_weight)
             l.backward()
             Optim.step()
             train_loss.append(l.detach().clone())
@@ -52,7 +51,7 @@ def train(optiomizer, num_epochs, net, train_iter, params, lambda_weight):
 
 
 def test(tset_iter, loss_fn):
-    net = torch.load(r'model\ALstm_9_pi', weights_only=False, map_location='cpu')
+    net = torch.load(r'model\CALstm.pt', weights_only=False, map_location='cpu')
 
 
     # net = net.cpu()
@@ -118,9 +117,11 @@ def test(tset_iter, loss_fn):
         return torch.tensor(result)
 
 if __name__ == '__main__':
-    batch_size, num_epoches, learn_rate, num_workers = 256, 100, 0.0035, 4
-    in_channel, input_size, hd_size, num_lstm_layers, drop_out, num_attention_heads = 3, 5, 20, 4, 0.05, 2
-    out_channel, middle_channel, num_steps, lambda_weight = 3, 6, 10, 0.1
+    batch_size, num_epoches, learn_rate, num_workers = 128, 150, 0.001, 4
+    in_channel, input_size, hd_size, num_lstm_layers, drop_out, num_attention_heads = 3, 5, 32, 3, 0.1, 4
+    out_channel, middle_channel, num_steps, lambda_weight = 3, 6, 10, 0.05
+
+
     params = [out_channel, middle_channel, hd_size, learn_rate, num_lstm_layers, lambda_weight]
 
     train_data = torch.load(r'data\input_train.pt').float()
@@ -161,7 +162,7 @@ if __name__ == '__main__':
     optimizer = Adam(model.parameters(), lr=learn_rate)
     loss_test_fn = nn.MSELoss()
 
-    # train(optimizer, num_epoches, model, train_iter, params_loss, lambda_weight)
+    train(optimizer, num_epoches, model, train_iter, params_loss, lambda_weight)
     result = test(test_iter, loss_test_fn)
 
     # params = np.array(params)
